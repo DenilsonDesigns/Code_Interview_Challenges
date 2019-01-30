@@ -1,20 +1,50 @@
 // Returns a promise that resolves with the average dimensions of all the passed in images
 // Ignores any images that fail to load
-function loadImages(images) {
-  let dimensions = {};
+async function loadImages(images) {
+  let dimensions = [];
   let counter = 0;
-  let widthBucket, heightBucket;
+  let widthBucket = 0;
+  let heightBucket = 0;
 
-  fetch(images[0]).then(res => {
-    console.log(res);
-    if (res.ok === true) {
-      console.log("got em");
-    } else {
-      console.log("missed me");
-    }
-  });
+  for (let i = 0; i < images.length; i++) {
+    await fetch(images[i])
+      .then(res => {
+        console.log(res);
+        if (!res.ok) {
+          console.log("error");
+        }
+        // console.log(res);
+        if (res.ok === true) {
+          dimensions.push(makeObject(res.url));
+          counter++;
+          // console.log(dimensions);
+        } else {
+          console.log("missed me");
+        }
+      })
+      .catch(err => {
+        console.log("Failed to fetch");
+      });
+  }
+
+  for (let i = 0; i < dimensions.length; i++) {
+    widthBucket += dimensions[i].width;
+    heightBucket += dimensions[i].height;
+  }
+  console.log(widthBucket / counter, heightBucket / counter);
+  return { width: widthBucket / counter, height: heightBucket / counter };
 }
 
+function makeObject(str) {
+  let wSlice = str.indexOf("w=");
+  let hSlice = str.indexOf("h=");
+  let width = Number(str.slice(wSlice + 2, wSlice + 5));
+  let height = Number(str.slice(hSlice + 2, hSlice + 5));
+
+  return { width: width, height: height };
+}
+
+//EXPECTED ANSWER
 const expected = { width: 260, height: 328 };
 
 const images = [
@@ -40,32 +70,14 @@ const images = [
   }
 ];
 
-const imageUrls = images.map(
+let imageUrls = images.map(
   ({ width, height }) =>
     `https://placeholdit.imgix.net/~text?txtsize=40&txt=${width}x${height}&w=${width}&h=${height}`
 );
 
+imageUrls = imageUrls.concat([
+  "https://not.a.real.domain/bad-image.jpg",
+  "https://fake-site.fake/bad-image.jpg"
+]);
+
 loadImages(imageUrls);
-// describe('Asynchronously load multiple images and average out their dimensions', () => {
-
-// 	it('Returns the average width and height of all the images', () => {
-// 		return loadImages(imageUrls).then(dimensions => {
-// 			dimensions.should.have.keys('width', 'height');
-
-// 			dimensions.should.eql(expected);
-// 		});
-// 	});
-
-// 	// Images that fail to load should not be counted towards the averages
-// 	it('Ignores images that fail to load', () => {
-// 		const imagesUrlsWithBadImage = imageUrls.concat([
-// 			'https://not.a.real.domain/bad-image.jpg',
-// 			'https://fake-site.fake/bad-image.jpg',
-// 		]);
-
-// 		return loadImages(imagesUrlsWithBadImage).then(dimensions => {
-// 			dimensions.should.have.keys('width', 'height');
-// 			dimensions.should.eql(expected);
-// 		});
-// 	});
-// });
