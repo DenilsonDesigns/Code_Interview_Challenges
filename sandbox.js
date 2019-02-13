@@ -1,24 +1,16 @@
-function areThereDuplicates() {
-  let obj = {};
-  let duplicate = false;
+setTimeout(() => {
+  console.log("set timeout1");
+}, 0002);
+setTimeout(() => {
+  console.log("set timeout2");
+}, 0000);
 
-  for (let i = 0; i < arguments.length; i++) {
-    if (!obj[arguments[i]]) {
-      obj[arguments[i]] = 1;
-    } else {
-      obj[arguments[i]] += 1;
-    }
-  }
-
-  for (let key in obj) {
-    if (obj[key] > 1) {
-      duplicate = true;
-    }
-  }
-  console.log(duplicate);
-  return duplicate;
-}
-
-areThereDuplicates(1, 2, 3); //false
-areThereDuplicates(1, 2, 2); //true
-areThereDuplicates("a", "b", "c", "a"); //true
+console.log(1);
+console.log(2);
+console.log(3);
+console.log(4);
+console.log(5);
+console.log(6);
+console.log(7);
+console.log(8);
+console.log(9);
