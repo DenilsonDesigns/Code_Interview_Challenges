@@ -1,16 +1,19 @@
-setTimeout(() => {
-  console.log("set timeout1");
-}, 0002);
-setTimeout(() => {
-  console.log("set timeout2");
-}, 0000);
+/**
+ * @param {string} J
+ * @param {string} S
+ * @return {number}
+ */
+var numJewelsInStones = function(J, S) {
+  let counter = 0;
+  //for each J, loop through S and +1 for each hit
+  for (let el of J) {
+    for (let char of S) {
+      if (el === char) {
+        counter++;
+      }
+    }
+  }
+  return counter;
+};
 
-console.log(1);
-console.log(2);
-console.log(3);
-console.log(4);
-console.log(5);
-console.log(6);
-console.log(7);
-console.log(8);
-console.log(9);
+numJewelsInStones("z", "ZZ");
